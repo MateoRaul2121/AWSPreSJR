@@ -43,7 +43,6 @@ func ConnStr(claves models.SecretRDSJson) string {
 	dbEndpoint = claves.Host
 	dbName = "postgres"
 
-	// Cambia la cadena de conexión a PostgreSQL
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:5432/%s?sslmode=require", dbUser, authToken, dbEndpoint, dbName)
 	fmt.Println(dsn)
 	return dsn
