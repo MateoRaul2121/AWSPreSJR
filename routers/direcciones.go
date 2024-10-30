@@ -66,3 +66,33 @@ func SelectDireccion(body string, request events.APIGatewayV2HTTPRequest) (int, 
 
 	return 200, string(Direc)
 }
+
+func DeleteFisicoDireccion(body string, User string, id int) (int, string) {
+	if id == 0 {
+		return 400, "Debe especificar ID de la Direccion a Borrar"
+	}
+
+	err := bd.DeleteFisicoDireccion(id)
+	if err != nil {
+		return 400, "Ocurrió un error al intentar realizar el DELETE de la direccion " + strconv.Itoa(id) + " > " + err.Error()
+	}
+
+	return 200, "Delete OK"
+}
+
+func UpdateDireccion(body string, User string, id int) (int, string) {
+	var t models.Direccion
+
+	err := json.Unmarshal([]byte(body), &t)
+	if err != nil {
+		return 400, "Error en los datos recibidos " + err.Error()
+	}
+
+	t.DirecID = id
+	err2 := bd.UpdateDireccion(t)
+	if err2 != nil {
+		return 400, "Ocurrio un error al intentar realizar el UPDATE de la Direccion " + strconv.Itoa(id) + " > " + err2.Error()
+	}
+
+	return 200, "Update OK"
+}

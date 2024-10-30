@@ -2,6 +2,7 @@ package bd
 
 import (
 	"fmt"
+	"strconv"
 
 	"example.com/m/v2/models"
 )
@@ -78,4 +79,48 @@ func SelectDireccion(IDDirec int, Slug string) ([]models.Direccion, error) {
 
 	fmt.Println("Select Direccion > Ejecución Exitosa")
 	return Direc, nil
+}
+
+func DeleteFisicoDireccion(id int) error {
+	fmt.Println("Comienza Registro de Delete Direccion")
+
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	sentencia := "DELETE FROM areas.direcciones WHERE id_direcciones = " + strconv.Itoa(id)
+
+	_, err = Db.Exec(sentencia)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	fmt.Println(sentencia)
+	fmt.Println("Delete Direccion > Ejecución Exitosa")
+	return nil
+}
+
+func UpdateDireccion(c models.Direccion) error {
+	fmt.Println("Comienza Registro de Update Direccion")
+
+	// Conexión a la base de datos
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	// Llamada a la función almacenada para actualizar los datos de Direcciones
+	sentencia := "SELECT areas.update_direccion($1, $2, $3, $4, $5, $6, $7)"
+	_, err = Db.Exec(sentencia, c.DirecID, c.SecreID, c.DirecNombre, c.DirecDescripcion, c.DirecActivo, c.DirecTelefono, c.DirecCorreo)
+	if err != nil {
+		fmt.Println("Error al ejecutar la actualización:", err.Error())
+		return err
+	}
+
+	fmt.Println("Update Direccion > Ejecución Exitosa")
+	return nil
 }

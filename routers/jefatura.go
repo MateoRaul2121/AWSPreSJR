@@ -69,3 +69,33 @@ func SelectJefatura(body string, request events.APIGatewayV2HTTPRequest) (int, s
 
 	return 200, string(Jefa)
 }
+
+func DeleteFisicoJefatura(body string, User string, id int) (int, string) {
+	if id == 0 {
+		return 400, "Debe especificar ID de la Jefatura a Borrar"
+	}
+
+	err := bd.DeleteFisicoJefatura(id)
+	if err != nil {
+		return 400, "Ocurrió un error al intentar realizar el DELETE de la Jefatura " + strconv.Itoa(id) + " > " + err.Error()
+	}
+
+	return 200, "Delete OK"
+}
+
+func UpdateJefatura(body string, User string, id int) (int, string) {
+	var t models.Jefatura
+
+	err := json.Unmarshal([]byte(body), &t)
+	if err != nil {
+		return 400, "Error en los datos recibidos " + err.Error()
+	}
+
+	t.JefaID = id
+	err2 := bd.UpdateJefatura(t)
+	if err2 != nil {
+		return 400, "Ocurrio un error al intentar realizar el UPDATE de la Jefatura " + strconv.Itoa(id) + " > " + err2.Error()
+	}
+
+	return 200, "Update OK"
+}

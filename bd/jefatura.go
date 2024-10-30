@@ -2,6 +2,7 @@ package bd
 
 import (
 	"fmt"
+	"strconv"
 
 	"example.com/m/v2/models"
 )
@@ -79,4 +80,48 @@ func SelectJefatura(IDJefa int, Slug string) ([]models.Jefatura, error) {
 
 	fmt.Println("Select Jefatura > Ejecución Exitosa")
 	return Jefa, nil
+}
+
+func DeleteFisicoJefatura(id int) error {
+	fmt.Println("Comienza Registro de Delete Jefatura")
+
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	sentencia := "DELETE FROM areas.jefaturas WHERE id_jefatura = " + strconv.Itoa(id)
+
+	_, err = Db.Exec(sentencia)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	fmt.Println(sentencia)
+	fmt.Println("Delete Jefatura > Ejecución Exitosa")
+	return nil
+}
+
+func UpdateJefatura(c models.Jefatura) error {
+	fmt.Println("Comienza Registro de Update Jefatura")
+
+	// Conexión a la base de datos
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	// Llamada a la función almacenada para actualizar los datos de Jefaturas
+	sentencia := "SELECT areas.update_jefatura($1, $2, $3, $4, $5, $6, $7)"
+	_, err = Db.Exec(sentencia, c.JefaID, c.DirecID, c.JefaNombre, c.JefaDescripcion, c.JefaActivo, c.JefaTelefono, c.JefaCorreo)
+	if err != nil {
+		fmt.Println("Error al ejecutar la actualización:", err.Error())
+		return err
+	}
+
+	fmt.Println("Update Jefatura > Ejecución Exitosa")
+	return nil
 }

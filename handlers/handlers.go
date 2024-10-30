@@ -72,6 +72,10 @@ func ProcesoJefatura(body string, path string, method string, user string, id in
 		return routers.InsertJefatura(body, user)
 	case "GET":
 		return routers.SelectJefatura(body, request)
+	case "DELETE":
+		return routers.DeleteFisicoJefatura(body, user, id)
+	case "PUT":
+		return routers.UpdateJefatura(body, user, id)
 	}
 	return 400, "Method Invalid"
 }
@@ -82,6 +86,10 @@ func ProcesoDireccion(body string, path string, method string, user string, id i
 		return routers.InsertDireccion(body, user)
 	case "GET":
 		return routers.SelectDireccion(body, request)
+	case "DELETE":
+		return routers.DeleteFisicoDireccion(body, user, id)
+	case "PUT":
+		return routers.UpdateDireccion(body, user, id)
 	}
 	return 400, "Method Invalid"
 }
@@ -92,6 +100,11 @@ func ProcesoSecretaria(body string, path string, method string, user string, id 
 		return routers.InsertSecretaria(body, user)
 	case "GET":
 		return routers.SelectSecretaria(body, request)
+	case "DELETE":
+		return routers.DeleteFisicoSecretaria(body, user, id)
+	case "PUT":
+		return routers.UpdateSecretaria(body, user, id)
 	}
+
 	return 400, "Method Invalid"
 }

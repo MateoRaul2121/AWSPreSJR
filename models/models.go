@@ -24,7 +24,7 @@ type Secretaria struct {
 	SecreID          int    `json:"SecreID"`
 	SecreNombre      string `json:"nombre"`
 	SecreDescripcion string `json:"descripcion"`
-	SecreActivo      bool   `json:"activo"`
+	SecreActivo      *bool  `json:"activo"`
 	SecreTelefono    string `json:"telefono"`
 	SecreCorreo      string `json:"correo"`
 }
@@ -34,7 +34,7 @@ type Direccion struct {
 	SecreID          int    `json:"SecreID"`
 	DirecNombre      string `json:"nombre"`
 	DirecDescripcion string `json:"descripcion"`
-	DirecActivo      bool   `json:"activo"`
+	DirecActivo      *bool  `json:"activo"`
 	DirecTelefono    string `json:"telefono"`
 	DirecCorreo      string `json:"correo"`
 }
@@ -44,7 +44,7 @@ type Jefatura struct {
 	DirecID         int    `json:"DirecID"`
 	JefaNombre      string `json:"nombre"`
 	JefaDescripcion string `json:"descripcion"`
-	JefaActivo      bool   `json:"activo"`
+	JefaActivo      *bool  `json:"activo"`
 	JefaTelefono    string `json:"telefono"`
 	JefaCorreo      string `json:"correo"`
 }

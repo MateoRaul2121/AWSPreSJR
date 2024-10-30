@@ -2,6 +2,7 @@ package bd
 
 import (
 	"fmt"
+	"strconv"
 
 	"example.com/m/v2/models"
 )
@@ -78,4 +79,48 @@ func SelectSecretaria(IDSecre int, Slug string) ([]models.Secretaria, error) {
 
 	fmt.Println("Select Secretaria > Ejecución Exitosa")
 	return Secr, nil
+}
+
+func DeleteFisicoSecretaria(id int) error {
+	fmt.Println("Comienza Registro de Delete Secretaria")
+
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	sentencia := "DELETE FROM areas.secretarias WHERE id_secretaria = " + strconv.Itoa(id)
+
+	_, err = Db.Exec(sentencia)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	fmt.Println(sentencia)
+	fmt.Println("Delete Secretaria > Ejecución Exitosa")
+	return nil
+}
+
+func UpdateSecretaria(c models.Secretaria) error {
+	fmt.Println("Comienza Registro de Update Secretaria")
+
+	// Conexión a la base de datos
+	err := DbConnect()
+	if err != nil {
+		return err
+	}
+	defer Db.Close()
+
+	// Llamada a la función almacenada para actualizar los datos de secretarias
+	sentencia := "SELECT areas.update_secretaria($1, $2, $3, $4, $5, $6)"
+	_, err = Db.Exec(sentencia, c.SecreID, c.SecreNombre, c.SecreDescripcion, c.SecreActivo, c.SecreTelefono, c.SecreCorreo)
+	if err != nil {
+		fmt.Println("Error al ejecutar la actualización:", err.Error())
+		return err
+	}
+
+	fmt.Println("Update Secretaria > Ejecución Exitosa")
+	return nil
 }
