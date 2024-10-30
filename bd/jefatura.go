@@ -31,29 +31,32 @@ func SelectJefatura(IDJefa int, Slug string) ([]models.Jefatura, error) {
 
 	var Jefa []models.Jefatura
 
+	// Conexión a la base de datos
 	err := DbConnect()
 	if err != nil {
 		return Jefa, err
 	}
 	defer Db.Close()
 
-	// Construcción de la sentencia SQL
-	sentencia := "SELECT id_jefatura,id_direcciones, nombre, descripcion, activo, telefono, correo FROM areas.jefaturas"
-	var args []interface{}
+	// Ajustar los parámetros para la llamada a la función almacenada
+	var idParam interface{}
+	var slugParam interface{}
 
-	// Condiciones para la consulta
 	if IDJefa > 0 {
-		sentencia += " WHERE id_jefatura = $1"
-		args = append(args, IDJefa)
-	} else if len(Slug) > 0 {
-		sentencia += " WHERE nombre ILIKE $1"
-		args = append(args, "%"+Slug+"%")
+		idParam = IDJefa
+	} else {
+		idParam = nil
 	}
 
-	fmt.Println("Consulta preparada:", sentencia)
+	if len(Slug) > 0 {
+		slugParam = Slug
+	} else {
+		slugParam = nil
+	}
 
-	// Ejecución de la consulta
-	rows, err := Db.Query(sentencia, args...)
+	// Construcción de la llamada a la función almacenada
+	sentencia := "SELECT * FROM areas.get_jefatura($1, $2)"
+	rows, err := Db.Query(sentencia, idParam, slugParam)
 	if err != nil {
 		return Jefa, err
 	}

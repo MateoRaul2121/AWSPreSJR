@@ -37,23 +37,25 @@ func SelectDireccion(IDDirec int, Slug string) ([]models.Direccion, error) {
 	}
 	defer Db.Close()
 
-	// Construcción de la sentencia SQL
-	sentencia := "SELECT id_direcciones,id_secretaria, nombre, descripcion, activo, telefono, correo FROM areas.direcciones"
-	var args []interface{}
+	// Ajustar los parámetros para la llamada a la función almacenada
+	var idParam interface{}
+	var slugParam interface{}
 
-	// Condiciones para la consulta
 	if IDDirec > 0 {
-		sentencia += " WHERE id_direcciones = $1"
-		args = append(args, IDDirec)
-	} else if len(Slug) > 0 {
-		sentencia += " WHERE nombre ILIKE $1"
-		args = append(args, "%"+Slug+"%")
+		idParam = IDDirec
+	} else {
+		idParam = nil
 	}
 
-	fmt.Println("Consulta preparada:", sentencia)
+	if len(Slug) > 0 {
+		slugParam = Slug
+	} else {
+		slugParam = nil
+	}
 
-	// Ejecución de la consulta
-	rows, err := Db.Query(sentencia, args...)
+	// Construcción de la llamada a la función almacenada
+	sentencia := "SELECT * FROM areas.get_direc($1, $2)"
+	rows, err := Db.Query(sentencia, idParam, slugParam)
 	if err != nil {
 		return Direc, err
 	}
