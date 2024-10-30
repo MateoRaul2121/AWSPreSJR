@@ -37,23 +37,25 @@ func SelectSecretaria(IDSecre int, Slug string) ([]models.Secretaria, error) {
 	}
 	defer Db.Close()
 
-	// Construcción de la sentencia SQL
-	sentencia := "SELECT id_secretaria, nombre, descripcion, activo, telefono, correo FROM areas.secretarias"
-	var args []interface{}
+	// Ajustar los parámetros para la llamada a la función almacenada
+	var idParam interface{}
+	var slugParam interface{}
 
-	// Condiciones para la consulta
 	if IDSecre > 0 {
-		sentencia += " WHERE id_secretaria = $1"
-		args = append(args, IDSecre)
-	} else if len(Slug) > 0 {
-		sentencia += " WHERE nombre ILIKE $1"
-		args = append(args, "%"+Slug+"%")
+		idParam = IDSecre
+	} else {
+		idParam = nil
 	}
 
-	fmt.Println("Consulta preparada:", sentencia)
+	if len(Slug) > 0 {
+		slugParam = Slug
+	} else {
+		slugParam = nil
+	}
 
-	// Ejecución de la consulta
-	rows, err := Db.Query(sentencia, args...)
+	// Construcción de la llamada a la función almacenada
+	sentencia := "SELECT * FROM areas.get_secretarias($1, $2)"
+	rows, err := Db.Query(sentencia, idParam, slugParam)
 	if err != nil {
 		return Secr, err
 	}
